@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LOGIN</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/login.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <link rel="shortcut icon" href="../img/dukem.png" type="image/x-icon">
+<!-- <script
+  src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback"
+  defer
+></script> -->
+</head>
+
+<body >
+
+  <div class="container mt-5 bg-red-600">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <section style="padding-top: 15px ;text-align: center;margin: auto;justify-content: center;" class="logo">
+          <img src="../img/schedule.png" alt="logo" width="20%" height="20%" >
+         </section>
+        <form id="loginForm" class=" p-4 rounded " method="post" action="/loginMotorista">
+          
+          <div class="form-group">
+            <label for="loginInput">Email:</label>
+            <input type="text" class="form-control" id="loginInput" name="login" maxlength="45" required>
+          </div>
+          <div class="form-group">
+            <label for="senhaInput">Senha:</label>
+            <input type="password" class="form-control" id="senhaInput" name="password" maxlength="45" required>
+          </div>      
+         
+          <!-- <div  class="cf-turnstile" data-sitekey="0x4AAAAAAAkFOvUQAmXQJKjB" data-callback="javascriptCallback"></div> -->
+
+          <div class="text-center">
+            <button type="submit" class="btn btn-primary">Logar</button>
+          </div>
+          
+          <% if (message.error)  { %>
+          <div class="alert alert-danger" role="alert"><%= message.error %></div>
+          <% } %>
+          
+          <!-- <div class="alert alert-success" role="alert"><%= message.sucesso %></div> -->
+          <div class="text-center mt-3">           
+
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  
+  
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>

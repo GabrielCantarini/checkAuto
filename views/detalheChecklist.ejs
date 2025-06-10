@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <title>Checklist - Abastecimento</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="/css/styles.css" />
+    <script src="/js/calendario.js"></script>
+    
+  
+   
+
+</head>
+
+<body class="max-w-6xl max-w-screen-2xl m-auto min-h-full py-20">
+
+    <div id="loadingScreen" class="fixed inset-0 flex items-center justify-center bg-white z-50 hidden">
+        <div class="flex space-x-2">
+            <div class="h-8 w-8 bg-black rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+            <div class="h-8 w-8 bg-black rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+            <div class="h-8 w-8 bg-black rounded-full animate-bounce"></div>
+        </div>
+    </div>
+
+    <div class="toast-container space-y-4"></div>
+    <section id="container" class="bg-white p-2 shadow-md rounded">
+        <nav class="bg-gray-800 fixed top-0 left-0 w-full">
+            <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 ">
+                <div class="relative flex h-16 items-center justify-between">
+                    <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
+
+                    </div>
+                    <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+                        <div class="flex shrink-0 items-center">
+                            <img class="h-8 w-auto"
+                                src="https://sorpanalimentos.agilecdn.com.br/imgs/logosorpan-1676673099.png"
+                                alt="Sorpan">
+                        </div>
+                        <div class="hidden sm:ml-6 sm:block">
+                            <div class="flex space-x-4">
+
+                                <a href="/date" class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
+                                    aria-current="page">Checklist</a>
+                                <!-- <a href="#"
+                                    class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Motorista</a>
+
+                                <a href="#"
+                                    class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Veículo</a> -->
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Botão de Notificações -->
+                    <div x-data="{ openNotifications: false }" class="relative">
+                        <button @click="openNotifications = !openNotifications"
+                            class="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-none">
+                            <span class="sr-only">Ver notificações</span>
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+                            </svg>
+                        </button>
+
+                        <!-- Menu de Notificações -->
+                        <div x-show="openNotifications" @click.away="openNotifications = false"
+                            class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5">
+                            <!-- Conteúdo do menu de notificações -->
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Você não possui
+                                notificações
+                            </a>
+
+                        </div>
+                    </div>
+
+
+
+                    <!-- Botão de Perfil -->
+                    <div x-data="{ openProfile: false }" class="relative ml-3 flex-shrink-0">
+                        <button @click="openProfile = !openProfile"
+                            class="flex rounded-full bg-gray-50 text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+                            id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+                            <span class="sr-only">Abrir menu do usuário</span>
+                            <img class="h-8 w-8 rounded-full"
+                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/800px-User_icon_2.svg.png"
+                                alt="">
+                        </button>
+
+                        <!-- Menu de Perfil -->
+                        <div x-show="openProfile" @click.away="openProfile = false"
+                            class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5"
+                            role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button">
+                            <!-- Conteúdo do menu de perfil -->
+                            <form action="/logout" method="post"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+
+                                <button type="submit" class="w-full text-left">Sair</button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </nav>
+
+    <section class="bg-white p-2 md:p-6 rounded-2xl border border-gray-300 max-w-xl mx-auto mt-[15vh]">
+        <details open class="border-b border-gray-300">
+            <summary
+                class="outline-none list-none py-6 text-lg font-bold cursor-pointer relative flex justify-between rounded-lg select-none hover:after:opacity-75 focus-visible:ring-4 focus-visible:ring-gray-100 after:content-[''] after:absolute after:right-0 after:top-6 after:h-6 after:w-6 after:bg-[url('data:image/svg+xml;charset=UTF-8,<svg class=\'w-6 h-6\' fill=\'none\' stroke=\'currentColor\' viewBox=\'0 0 24 24\' xmlns=\'http://www.w3.org/2000/svg\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'></path></svg>')] after:opacity-40 after:transition-transform after:duration-150 after:ease">
+                Motorista
+            </summary>
+
+
+            <article class="animate-slide-in">
+                <table class="w-full rounded-2xl m-auto content-center">
+                    <tbody>
+                        <section class="bg-gray-100 m-auto flex justify-center rounded">                         
+          
+                            <img class="w-30 h-30 rounded-full" src="<%= motorista.fotoPerfil ? motorista.fotoPerfil : '../img/profile/13e2cd96-4752-4db9-8b77-2cf0f93cee9d.jpg' %>">
+                          
+                        </section>
+                        <tr>
+                            <td class="px-4 py-2 font-semibold text-center">NOME:</td>
+                            <td class="px-4 py-2 text-center">
+                                <%= motorista.nomeCompleto ? motorista.nomeCompleto : 'Indefinido' %>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2 font-semibold text-center">CNH:</td>
+                            <td class="px-4 py-2 text-center">
+                                <%= motorista.CNH ? motorista.CNH: 'Indefinido' %>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2 font-semibold text-center">CPF:</td>
+                            <td class="px-4 py-2 text-center">
+                                <%= motorista.CPF ? motorista.CPF: 'Indefinido' %>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2 font-semibold text-center">E-MAIL:</td>
+                            <td class="px-4 py-2 text-center">
+                                <%= motorista.email ? motorista.email: 'Indefinido' %>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2 font-semibold text-center">TELEFONE:</td>
+                            <td class="px-4 py-2 text-center"><%= motorista.telefone ? motorista.telefone: 'Indefinido' %></td>
+                        </tr>
+                    </tbody>
+                     
+
+                </table>
+
+            </article>
+            <article class="animate-slide-in">
+
+
+
+            </article>
+
+        </details>
+
+        <details class="border-b border-gray-300">
+            <summary
+                class="outline-none list-none py-6 text-lg font-bold cursor-pointer relative flex justify-between rounded-lg select-none hover:after:opacity-75 focus-visible:ring-4 focus-visible:ring-gray-100 after:content-[''] after:absolute after:right-0 after:top-6 after:h-6 after:w-6 after:bg-[url('data:image/svg+xml;charset=UTF-8,<svg class=\'w-6 h-6\' fill=\'none\' stroke=\'currentColor\' viewBox=\'0 0 24 24\' xmlns=\'http://www.w3.org/2000/svg\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'></path></svg>')] after:opacity-40 after:transition-transform after:duration-150 after:ease">
+                Veículo
+            </summary>
+            <article class="animate-slide-in">
+                <table class="w-full rounded-2xl m-auto content-center">
+                    <tbody>
+                        <tr class="bg-gray-400">
+                            <img class="relative flex rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden"
+                                src="../img/veiculo/polo.jpg">
+
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2 font-semibold text-center">Placa:</td>
+                            <td class="px-4 py-2">
+                                                          
+                                <%= (veiculo.numeroPlaca ? veiculo.numeroPlaca : 'Indefinido' ) %>
+                                
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2 font-semibold text-center">Modelo:</td>
+                            <td class="px-4 py-2">             
+                                <%= (veiculo.marcaModelo ? veiculo.marcaModelo : 'Indefinido' ) %>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2 font-semibold text-center">Cor:</td>
+                            <td class="px-4 py-2">                                
+                                <%= (veiculo.cor ? veiculo.cor : 'Indefinido' ) %>
+                            </td>
+                        </tr>
+                        <tr>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </article>
+        </details>
+
+        <details>
+            <summary
+                class="outline-none list-none py-6 text-lg font-bold cursor-pointer relative flex justify-between rounded-lg select-none hover:after:opacity-75 focus-visible:ring-4 focus-visible:ring-gray-100 after:content-[''] after:absolute after:right-0 after:top-6 after:h-6 after:w-6 after:bg-[url('data:image/svg+xml;charset=UTF-8,<svg class=\'w-6 h-6\' fill=\'none\' stroke=\'currentColor\' viewBox=\'0 0 24 24\' xmlns=\'http://www.w3.org/2000/svg\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'></path></svg>')] after:opacity-40 after:transition-transform after:duration-150 after:ease">
+                Abastecimento - Sexta Feira / Sábado
+            </summary>
+            <article class="animate-slide-in">
+                <table class="w-full rounded-2xl m-auto content-center">
+                    <tbody>
+
+                        <tr>
+                            <td class="px-4 py-2 font-semibold text-center">Foto do nível de combustível:</td>
+                            <td class="px-4 py-2 font-semibold text-center">
+
+
+
+                                <section>
+
+                                    <div x-data="{
+                                      imageGalleryOpened: false,
+                                      imageGalleryActiveUrl: null,
+                                      imageGalleryImageIndex: null,
+                                      imageGalleryOpen(event) {
+                                          this.imageGalleryImageIndex = event.target.dataset.index;
+                                          this.imageGalleryActiveUrl = event.target.src;
+                                          this.imageGalleryOpened = true;
+                                      },
+                                      imageGalleryClose() {
+                                          this.imageGalleryOpened = false;
+                                          setTimeout(() => this.imageGalleryActiveUrl = null, 300);
+                                      },
+                                      imageGalleryNext(){
+                                          if(this.imageGalleryImageIndex == this.$refs.gallery.childElementCount){
+                                              this.imageGalleryImageIndex = 1;
+                                          } else {
+                                              this.imageGalleryImageIndex = parseInt(this.imageGalleryImageIndex) + 1;
+                                          }
+                                          this.imageGalleryActiveUrl = this.$refs.gallery.querySelector('[data-index=\'' + this.imageGalleryImageIndex + '\']').src;
+                                      },
+                                      imageGalleryPrev() {
+                                          if(this.imageGalleryImageIndex == 1){
+                                              this.imageGalleryImageIndex = this.$refs.gallery.childElementCount;
+                                          } else {
+                                              this.imageGalleryImageIndex = parseInt(this.imageGalleryImageIndex) - 1;
+                                          }
+                              
+                                          this.imageGalleryActiveUrl = this.$refs.gallery.querySelector('[data-index=\'' + this.imageGalleryImageIndex + '\']').src;
+                                          
+                                      }
+                                  }" @image-gallery-next.window="imageGalleryNext()"
+                                        @image-gallery-prev.window="imageGalleryPrev()"
+                                        @keyup.right.window="imageGalleryNext();"
+                                        @keyup.left.window="imageGalleryPrev();" x-init="
+                                      imageGalleryPhotos = $refs.gallery.querySelectorAll('img');
+                                      for(let i=0; i<imageGalleryPhotos.length; i++){
+                                          imageGalleryPhotos[i].setAttribute('data-index', i+1);
+                                      }
+                                  " class="w-full h-full select-none">
+                                        <div class="max-w-6xl mx-auto duration-1000 delay-300 opacity-0 select-none ease animate-fade-in-view"
+                                            style="translate: none; rotate: none; scale: none; opacity: 1; transform: translate(0px, 0px);">
+                                            <ul x-ref="gallery" id="gallery"
+                                                class="grid grid-cols-2 gap-5 lg:grid-cols-5">
+                                                <li>
+                                                    <% if (SextaFeira && SextaFeira.fotoNivelCombustivel) { %>
+                                                        <img x-on:click="imageGalleryOpen"
+                                                            src="<%= SextaFeira && SextaFeira.fotoNivelCombustivel ? SextaFeira.fotoNivelCombustivel : 'Não possui imagem' %>"
+                                                            class="object-cover select-none w-full h-auto bg-gray-200 rounded cursor-zoom-in aspect-[5/6] lg:aspect-[2/3] xl:aspect-[3/4]"
+                                                            alt="photo gallery image 01">
+                                                        <% }else{ %>
+                                                            <span class="cursor-pointer relative group bg-gray-800"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                                                                    
+                                                                </svg>
+                                                                <div class="absolute bottom-full mb-2 rig-1/2 transform -translate-x-1/2 w-max px-3 py-2 bg-gray-800 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                    Não possui informação.
+                                                                </div>
+                                                                
+                                                        
+                                                              
+                                                            </span>
+                                                            <% } %>
+
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <template x-teleport="body">
+                                            <div x-show="imageGalleryOpened"
+                                                x-transition:enter="transition ease-in-out duration-300"
+                                                x-transition:enter-start="opacity-0"
+                                                x-transition:leave="transition ease-in-in duration-300"
+                                                x-transition:leave-end="opacity-0" @click="imageGalleryClose"
+                                                @keydown.window.escape="imageGalleryClose"
+                                                x-trap.inert.noscroll="imageGalleryOpened"
+                                                class="fixed inset-0 z-[99] flex items-center justify-center bg-black bg-opacity-50 select-none cursor-zoom-out"
+                                                x-cloak>
+                                                <div
+                                                    class="relative flex items-center justify-center w-11/12 xl:w-4/5 h-11/12">
+                                                    <div @click="$event.stopPropagation(); $dispatch('image-gallery-prev')"
+                                                        class="absolute left-0 flex items-center justify-center text-white translate-x-10 rounded-full cursor-pointer xl:-translate-x-24 2xl:-translate-x-32 bg-white/10 w-14 h-14 hover:bg-white/20">
+                                                        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg"
+                                                            fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                                            stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M15.75 19.5L8.25 12l7.5-7.5" />
+                                                        </svg>
+                                                    </div>
+                                                    <img x-show="imageGalleryOpened"
+                                                        x-transition:enter="transition ease-in-out duration-300"
+                                                        x-transition:enter-start="opacity-0 transform scale-50"
+                                                        x-transition:leave="transition ease-in-in duration-300"
+                                                        x-transition:leave-end="opacity-0 transform scale-50"
+                                                        class="object-contain object-center w-full h-full select-none cursor-zoom-out"
+                                                        :src="imageGalleryActiveUrl" alt="" style="display: none;">
+                                                    <div @click="$event.stopPropagation(); $dispatch('image-gallery-next');"
+                                                        class="absolute right-0 flex items-center justify-center text-white -translate-x-10 rounded-full cursor-pointer xl:translate-x-24 2xl:translate-x-32 bg-white/10 w-14 h-14 hover:bg-white/20">
+                                                        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg"
+                                                            fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                                            stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+
+                                </section>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2 font-semibold text-center">Kilometragem</td>
+                            <td class="px-4 py-2"><%= SextaFeira && SextaFeira.kilometragem ? SextaFeira.kilometragem : 'Indefinido' %></td>
+                            
+                        </tr>
+                        <tr>
+
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2 font-semibold text-center">Valor Abastecimento:</td>
+                            <td class="px-4 py-2"><%= SextaFeira && SextaFeira.valorTotal ? 'R$ ' + SextaFeira.valorTotal + ',00'
+                                : 'Indefinido' %>
+                        </td>
+                     
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+            </article>
+        </details>
+        <details>
+            <summary
+                class="outline-none list-none py-6 text-lg font-bold cursor-pointer relative flex justify-between rounded-lg select-none hover:after:opacity-75 focus-visible:ring-4 focus-visible:ring-gray-100 after:content-[''] after:absolute after:right-0 after:top-6 after:h-6 after:w-6 after:bg-[url('data:image/svg+xml;charset=UTF-8,<svg class=\'w-6 h-6\' fill=\'none\' stroke=\'currentColor\' viewBox=\'0 0 24 24\' xmlns=\'http://www.w3.org/2000/svg\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'></path></svg>')] after:opacity-40 after:transition-transform after:duration-150 after:ease">
+                Abastecimento - Segunda - Feira
+            </summary>
+            <article class="animate-slide-in">
+                <table class="w-full rounded-2xl m-auto content-center">
+                    <tbody>
+
+                        <tr>
+                            <td class="px-4 py-2 font-semibold text-center">Foto do nível de combustível:</td>
+                            <td class="px-4 py-2 font-semibold text-center">
+
+
+
+                                <section>
+
+                                    <div x-data="{
+                                      imageGalleryOpened: false,
+                                      imageGalleryActiveUrl: null,
+                                      imageGalleryImageIndex: null,
+                                      imageGalleryOpen(event) {
+                                          this.imageGalleryImageIndex = event.target.dataset.index;
+                                          this.imageGalleryActiveUrl = event.target.src;
+                                          this.imageGalleryOpened = true;
+                                      },
+                                      imageGalleryClose() {
+                                          this.imageGalleryOpened = false;
+                                          setTimeout(() => this.imageGalleryActiveUrl = null, 300);
+                                      },
+                                      imageGalleryNext(){
+                                          if(this.imageGalleryImageIndex == this.$refs.gallery.childElementCount){
+                                              this.imageGalleryImageIndex = 1;
+                                          } else {
+                                              this.imageGalleryImageIndex = parseInt(this.imageGalleryImageIndex) + 1;
+                                          }
+                                          this.imageGalleryActiveUrl = this.$refs.gallery.querySelector('[data-index=\'' + this.imageGalleryImageIndex + '\']').src;
+                                      },
+                                      imageGalleryPrev() {
+                                          if(this.imageGalleryImageIndex == 1){
+                                              this.imageGalleryImageIndex = this.$refs.gallery.childElementCount;
+                                          } else {
+                                              this.imageGalleryImageIndex = parseInt(this.imageGalleryImageIndex) - 1;
+                                          }
+                              
+                                          this.imageGalleryActiveUrl = this.$refs.gallery.querySelector('[data-index=\'' + this.imageGalleryImageIndex + '\']').src;
+                                          
+                                      }
+                                  }" @image-gallery-next.window="imageGalleryNext()"
+                                        @image-gallery-prev.window="imageGalleryPrev()"
+                                        @keyup.right.window="imageGalleryNext();"
+                                        @keyup.left.window="imageGalleryPrev();" x-init="
+                                      imageGalleryPhotos = $refs.gallery.querySelectorAll('img');
+                                      for(let i=0; i<imageGalleryPhotos.length; i++){
+                                          imageGalleryPhotos[i].setAttribute('data-index', i+1);
+                                      }
+                                  " class="w-full h-full select-none">
+                                        <div class="max-w-6xl mx-auto duration-1000 delay-300 opacity-0 select-none ease animate-fade-in-view"
+                                            style="translate: none; rotate: none; scale: none; opacity: 1; transform: translate(0px, 0px);">
+                                            <ul x-ref="gallery" id="gallery"
+                                                class="grid grid-cols-2 gap-5 lg:grid-cols-5">
+                                                <li>
+                                                    <% if (SegundaFeira && SegundaFeira.fotoNivelCombustivel) { %>
+                                                        <img x-on:click="imageGalleryOpen"
+                                                            src="<%= SegundaFeira && SegundaFeira.fotoNivelCombustivel ? SegundaFeira.fotoNivelCombustivel : 'Não possui imagem' %>"
+                                                            class="object-cover select-none w-full h-auto bg-gray-200 rounded cursor-zoom-in aspect-[5/6] lg:aspect-[2/3] xl:aspect-[3/4]"
+                                                            alt="photo gallery image 01">
+                                                        <% }else{ %>
+                                                            <span class="cursor-pointer relative group bg-gray-800"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                                                                    
+                                                                </svg>
+                                                                <div class="absolute bottom-full mb-2 rig-1/2 transform -translate-x-1/2 w-max px-3 py-2 bg-gray-800 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                    Não possui informação.
+                                                                </div>
+                                                                
+                                                        
+                                                              
+                                                            </span>
+                                                            <% } %>
+
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <template x-teleport="body">
+                                            <div x-show="imageGalleryOpened"
+                                                x-transition:enter="transition ease-in-out duration-300"
+                                                x-transition:enter-start="opacity-0"
+                                                x-transition:leave="transition ease-in-in duration-300"
+                                                x-transition:leave-end="opacity-0" @click="imageGalleryClose"
+                                                @keydown.window.escape="imageGalleryClose"
+                                                x-trap.inert.noscroll="imageGalleryOpened"
+                                                class="fixed inset-0 z-[99] flex items-center justify-center bg-black bg-opacity-50 select-none cursor-zoom-out"
+                                                x-cloak>
+                                                <div
+                                                    class="relative flex items-center justify-center w-11/12 xl:w-4/5 h-11/12">
+                                                    <div @click="$event.stopPropagation(); $dispatch('image-gallery-prev')"
+                                                        class="absolute left-0 flex items-center justify-center text-white translate-x-10 rounded-full cursor-pointer xl:-translate-x-24 2xl:-translate-x-32 bg-white/10 w-14 h-14 hover:bg-white/20">
+                                                        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg"
+                                                            fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                                            stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M15.75 19.5L8.25 12l7.5-7.5" />
+                                                        </svg>
+                                                    </div>
+                                                    <img x-show="imageGalleryOpened"
+                                                        x-transition:enter="transition ease-in-out duration-300"
+                                                        x-transition:enter-start="opacity-0 transform scale-50"
+                                                        x-transition:leave="transition ease-in-in duration-300"
+                                                        x-transition:leave-end="opacity-0 transform scale-50"
+                                                        class="object-contain object-center w-full h-full select-none cursor-zoom-out"
+                                                        :src="imageGalleryActiveUrl" alt="" style="display: none;">
+                                                    <div @click="$event.stopPropagation(); $dispatch('image-gallery-next');"
+                                                        class="absolute right-0 flex items-center justify-center text-white -translate-x-10 rounded-full cursor-pointer xl:translate-x-24 2xl:translate-x-32 bg-white/10 w-14 h-14 hover:bg-white/20">
+                                                        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg"
+                                                            fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                                            stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+
+                                </section>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2 font-semibold text-center">Kilometragem</td>
+                            <td class="px-4 py-2"><%= SegundaFeira && SegundaFeira.kilometragem ? SegundaFeira.kilometragem : 'Indefinido' %></td>
+                        </tr>
+                        <tr>
+
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2 font-semibold text-center">Valor Abastecimento:</td>
+                            <td class="px-4 py-2"><%= SegundaFeira && SegundaFeira.valorTotal ? 'R$ ' + SegundaFeira.valorTotal + ',00'
+                                    : 'Indefinido' %>
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+            </article>
+        </details>
+    </section>
+
+
+    </section>
+    <script src="/js/cdn.min.js"></script>   
+    <script src="/js/index.mjs"></script>
+    <script src="/js/flatpickr.js"></script>
+    <script src="/js/weekDay.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/focus@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+
+
+
+    <!-- <footer class="mx-auto w-full max-w-container px-4 sm:px-6 lg:px-8 bottom-0 left-0 bg-gray-100">
+        <div class="border-t border-slate-900/5 py-10"><svg class="mx-auto h-5 w-auto text-slate-900" aria-hidden="true"
+                viewBox="0 0 160 24" fill="none">
+            </svg>
+            <p class="mt-5 text-center text-sm leading-6 text-slate-500">© 2025 Industrial e Comercial Almeida LTDA.
+                Todos os direitos reservados.</p>
+            <div class="mt-8 flex items-center justify-center space-x-4 text-sm font-semibold leading-6 text-slate-700">
+                <a href="/privacy-policy">Política de Privacidade</a>
+                <div class="h-4 w-px bg-slate-500/20"></div><a href="/changelog">Changelog</a>
+            </div>
+        </div>
+    </footer> -->
+</body>
+</html>

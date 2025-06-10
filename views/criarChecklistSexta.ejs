@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <title>Checklist - Abastecimento</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/calendario.js"></script>
+    <script src="/js/loading.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_red.css">
+    <style>
+        
+        #picture__input {
+            display: none;
+        }
+
+        .picture {
+            max-width: 540px;
+            max-height: 1170px;
+            aspect-ratio: 16/9;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #838383;
+            border: 2px dashed currentcolor;
+            cursor: pointer;
+            font-family: sans-serif;
+            transition: color 300ms ease-in-out, background 300ms ease-in-out;
+            outline: none;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+
+        .picture:hover {
+            color: #000000;
+            background: #fcfcfc;
+        }
+
+        .picture:active {
+            border-color: turquoise;
+            color: turquoise;
+            background: #fcfcfc;
+        }
+
+        .picture:focus {
+            color: #777;
+            background: #fcfcfc;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .picture__img {
+            max-width: 100%;
+        }
+    </style>
+</head>
+
+<body class="pb-10">
+
+    <div class="relative h-screen w-full  ">
+        <img src="/img/background.jpg" alt="Background Image"
+            class="absolute inset-0 w-full h-full object-cover filter blur-sm">
+        <div class="absolute inset-0 bg-black bg-opacity-50 p-5"></div>
+        <div class="absolute inset-0 flex flex-col items-center justify-center">
+            <div class="w-50 p-2 rounded-lg bg-black bg-opacity-50">
+                <div class=" flex gap-2 items-center  justify-between text-white bg-gray-800 p-3 rounded">
+                    <a href="/data" class="hover:bg-gray-600 p-2 rounded duration-300 align-middle"><svg
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+
+                        </svg>
+                        Voltar
+                    </a>
+                    <a href="/logout" class="hover:bg-gray-600 p-2 rounded duration-300 align-middle">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
+                        </svg>Sair
+                    </a>
+                </div>
+
+                <div id="loadingScreen" class="fixed inset-0 flex items-center justify-center bg-white z-50 hidden">
+                    <div class="flex space-x-2">
+                        <div class="h-8 w-8 bg-black rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                        <div class="h-8 w-8 bg-black rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                        <div class="h-8 w-8 bg-black rounded-full animate-bounce"></div>
+                    </div>
+                </div>
+
+
+                <div class="toast-container space-y-4"></div>
+
+                <div class="container mx-auto  rounded-lg">
+
+                    <form class="grid grid-cols-1 gap-6" action="/uploadChecklistSex" method="POST"
+                        enctype="multipart/form-data">
+
+
+                        <input type="file" name="imagem" id="picture__input" accept="image/png, image/jpeg, image/jpg"
+                            capture="environment" required>
+
+                        <div class="p-2">
+
+                            <select id="category" name="veiculo"
+                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-[#8c0327] focus:ring-[#8c0327] focus:ring-opacity-50 p-2"
+                                style="background-color: #f6f6f6;">
+                                <option disabled selected>Selecione o Veículo</option>
+
+                                <% veiculos.forEach(veiculo=> { %>
+
+                                    <option value="<%= veiculo.numeroPlaca %>">
+                                        <%= veiculo.marcaModelo %> / <%= veiculo.numeroPlaca %>
+                                    </option>
+
+                                    <% }) %>
+
+                            </select>
+                        </div>
+
+                        <div class=""></div>
+            
+                        <div class="flex flex-col items-center">
+                            <span class="text-lg font-semibold text-gray-700 mb-2 text-white">Tire uma Foto do Painel de
+                                Combustível</span>
+
+                            <label for="picture__input"
+                                class="text-white relative flex items-center justify-center w-48 h-48 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-[#8c0327] hover:bg-gray-100 transition duration-300">
+
+                                <svg id="camera-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor"
+                                    class="size-10 text-white:hover text-white absolute text-white:hover">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
+                                </svg>
+
+                     
+                                <div class="absolute w-full h-full flex items-center justify-center ">
+                                    <span class="picture__image w-full h-full text-black">
+
+                                    </span>
+                                </div>
+                            </label>
+
+                        </div>
+
+                        <div class="p-2 grid grid-cols-1 md:grid-cols-1 gap-6">
+
+                            <span class="text-white flex-shrink-0 flex items-center mr-3 text-gray-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 3v2M19 3v2M5 10h14M4 21h16a1 1 0 001-1V8a1 1 0 00-1-1H4a1 1 0 00-1 1v12a1 1 0 001 1z">
+                                    </path>
+                                </svg>
+                                <span class="ml-2 text-white">Data do Abastecimento</span>
+                            </span>
+                            <input id="datepicker" type="text" class="p-2 rounded" name="dataAbastecimento" required>
+                            <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+                            <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
+                        </div>
+
+
+
+                </div>
+
+                  <div class="p-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <span class="text-white">KM do veículo</span>
+                        <input type="text" name="km"
+                            class="text-center block w-full rounded-md border-gray-300 shadow-sm focus:border-[#8c0327] focus:ring-[#8c0327] focus:ring-opacity-50 h-12"
+                            style="background-color: #f6f6f6;" required />
+                    </div>
+
+                    <div>
+                        <span class="text-white">Valor do Abastecimento</span>
+                        <input type="text" name="valor" required id="valor-abastecimento"
+                            class="text-center block w-full rounded-md border-gray-300 shadow-sm focus:border-[#8c0327] focus:ring-[#8c0327] focus:ring-opacity-50 h-12"
+                            style="background-color: #f6f6f6;" />
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <input type="checkbox" id="choose-me" class="hidden peer" required />
+                    <label for="choose-me"
+                        class=" text-center bg-white select-none cursor-pointer flex items-center justify-center rounded-lg border-2 border-gray-200
+                            py-3 px-6 font-bold text-gray-700 transition-colors duration-200 ease-in-out peer-checked:bg-green-200 peer-checked:text-green-900 peer-checked:border-green-200">
+                        <span>Eu confirmo que estou comprometido em atender as demandas do setor com precisão e cuidado,
+                            evitando erros e desperdícios.</span>
+                    </label>
+                </div>
+
+                <input type="button" id="cadastroAbastecimento"
+                    class="m-2 bg-rose-500 text-white rounded-md px-4 py-2 hover:bg-rose-700 transition"
+                    onclick="openModal('modelConfirm')" value="Cadastrar Abastecimento">
+
+                </button>
+
+                <div id="modelConfirm"
+                    class="fixed hidden z-50 inset-0 bg-gray-900 bg-opacity-60 overflow-y-auto h-full w-full px-4 ">
+                    <div class="relative top-40 mx-auto shadow-xl rounded-md bg-white max-w-md">
+
+                        <div class="flex justify-end p-2">
+                            <button onclick="closeModal('modelConfirm')" type="button"
+                                class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div class="p-6 pt-0 text-center">
+                            <svg class="w-20 h-20 text-red-600 mx-auto" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <h3 class="text-xl font-normal text-gray-500 mt-5 mb-6">Tem certeza que deseja registrar
+                                esse abastecimento?</h3>
+                            <button type="submit" onclick="closeModal('modelConfirm')"
+                                class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-base inline-flex items-center px-3 py-2.5 text-center mr-2">
+                                Sim, tenho certeza!
+                            </button>
+                            <input type="button" onclick="closeModal('modelConfirm')"
+                                class="text-gray-900 bg-white hover:bg-gray-100 focus:ring-4 focus:ring-cyan-200 border border-gray-200 font-medium inline-flex items-center rounded-lg text-base px-3 py-2.5 text-center"
+                                data-modal-toggle="delete-user-modal" value="Não, cancelar!" />
+
+                            
+                        </div>
+
+                    </div>
+                </div>
+
+
+                </form>
+
+            </div>
+
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    const messageFromBackend = <%- JSON.stringify(message || null) %>;
+
+
+                    if (messageFromBackend && messageFromBackend.type) {
+                        showToast(messageFromBackend.type, messageFromBackend.title, messageFromBackend.text);
+                    }
+                });
+            </script>
+            <script type="text/javascript">
+                window.openModal = function (modalId) {
+                    document.getElementById(modalId).style.display = 'block'
+                    document.getElementsByTagName('body')[0].classList.add('overflow-y-hidden')
+                }
+
+                window.closeModal = function (modalId) {
+                    document.getElementById(modalId).style.display = 'none'
+                    document.getElementsByTagName('body')[0].classList.remove('overflow-y-hidden')
+                }
+                document.onkeydown = function (event) {
+                    event = event || window.event;
+                    if (event.keyCode === 27) {
+                        document.getElementsByTagName('body')[0].classList.remove('overflow-y-hidden')
+                        let modals = document.getElementsByClassName('modal');
+                        Array.prototype.slice.call(modals).forEach(i => {
+                            i.style.display = 'none'
+                        })
+                    }
+                };
+            </script>
+
+
+            <script>
+                function showToast(type, title, message) {
+                    const container = document.querySelector('.toast-container');
+                    const toast = document.createElement('div');
+
+                    const colors = {
+                        success: 'bg-green-500',
+                        error: 'bg-red-500',
+                        warning: 'bg-yellow-500',
+                        info: 'bg-blue-500'
+                    };
+
+                    const icons = {
+                        success: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                     </svg>`,
+                        error: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                   </svg>`,
+                        warning: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                     </svg>`,
+                        info: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>`
+                    };
+
+                    toast.className = `toast ${colors[type]} text-white p-4 rounded-lg shadow-lg flex items-start space-x-4 relative overflow-hidden`;
+                    toast.innerHTML = `
+            <div class="flex-shrink-0">
+                ${icons[type]}
+            </div>
+            <div class="flex-1">
+                <h3 class="font-bold">${title}</h3>
+                <p class="text-sm opacity-90">${message}</p>
+            </div>
+            <button onclick="this.parentElement.remove()" class="flex-shrink-0 hover:opacity-75">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+            <div class="progress-bar"></div>
+        `;
+
+                    container.appendChild(toast);
+
+                    setTimeout(() => {
+                        toast.classList.add('hide');
+                        setTimeout(() => toast.remove(), 500);
+                    }, 3000);
+                }
+            </script>
+
+            <script> 
+
+                document.addEventListener("DOMContentLoaded", function () {
+                    const checkbox = document.getElementById("choose-me");
+                    const submitButton = document.getElementById("cadastroAbastecimento");
+
+     
+                    submitButton.style.display = "none";
+
+                    checkbox.addEventListener("change", function () {
+                        if (checkbox.checked) {
+                            submitButton.style.display = "block"; 
+                        } else {
+                            submitButton.style.display = "none"; 
+                        }
+                    });
+                });
+            </script>
+            <script>
+
+                document.addEventListener("DOMContentLoaded", function () {
+                    const valorInput = document.getElementById("valor-abastecimento");
+
+                    valorInput.addEventListener("input", function () {
+                        let value = valorInput.value.replace(/\D/g, "");
+                        value = (parseFloat(value) / 100).toFixed(2); 
+                        valorInput.value = formatCurrency(value);
+                    });
+
+                    function formatCurrency(value) {
+                        return new Intl.NumberFormat("pt-BR", {
+                            style: "currency",
+                            currency: "BRL"
+                        }).format(value);
+                    }
+
+                    document.querySelector("form").addEventListener("submit", function () {
+                        valorInput.value = valorInput.value.replace(/[^\d,]/g, "").replace(",", ".");
+                    });
+                });
+
+
+            </script>
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    const kmInput = document.querySelector("input[name='km']");
+
+                    kmInput.addEventListener("input", function (event) {
+                        let value = event.target.value.replace(/\D/g, ""); 
+                        value = value.replace(/^0+/, "");
+
+                        if (value === "") {
+                            event.target.value = "";
+                            return;
+                        }
+
+                    
+                        event.target.value = new Intl.NumberFormat("pt-BR").format(value);
+                    });
+
+                    kmInput.addEventListener("change", function (event) {
+                        let value = event.target.value.replace(/\./g, "");
+                        if (isNaN(value) || value < 0) {
+                            alert("Por favor, insira um valor válido para a quilometragem.");
+                            event.target.value = "";
+                        }
+                    });
+
+                    document.querySelector("form").addEventListener("submit", function (event) {
+                        let value = kmInput.value.replace(/\./g, "");
+                        kmInput.value = value;
+                    });
+                });
+
+            </script>
+
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    const inputFile = document.querySelector("#picture__input");
+                    const pictureImage = document.querySelector(".picture__image");
+                    const cameraIcon = document.getElementById("camera-icon");
+
+                    inputFile.addEventListener("change", function (e) {
+                        const file = e.target.files[0];
+
+                        if (file) {
+                            const reader = new FileReader();
+
+                            reader.onload = function (e) {
+                                const img = document.createElement("img");
+                                img.src = e.target.result;
+                                img.classList.add("w-full", "h-full", "object-cover", "rounded-lg");
+
+                                pictureImage.innerHTML = "";
+                                pictureImage.appendChild(img);
+                   
+                                cameraIcon.style.display = "none";
+                            };
+
+                            reader.readAsDataURL(file);
+                        }
+                    });
+                });
+            </script>
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    flatpickr("#datepicker", {
+                        dateFormat: "Y-m-d",
+                        locale: "pt",
+                        disableMobile: true,
+                        enable: [
+                            function (date) {
+                                return date.getDay() === 5 || date.getDay() === 6; // Permitir apenas sextas e sábados
+                            }
+                        ]
+                    });
+                });
+            </script>
+            <script>
+                document.querySelector("form").addEventListener("submit", function (event) {
+                    const checkbox = document.getElementById("choose-me");
+                    if (!checkbox.checked) {
+                        alert("Você precisa confirmar seu compromisso antes de cadastrar!");
+                        event.preventDefault();
+                    }
+                });
+            </script>
+        </div>
+    </div>
+
+    </div>
+</body>

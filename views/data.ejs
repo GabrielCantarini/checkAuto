@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <title>Checklist - Abastecimento</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_red.css">
+    <style>
+        #picture__input {
+            display: none;
+        }
+
+        .picture {
+            max-width: 540px;
+            max-height: 1170px;
+            aspect-ratio: 16/9;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #838383;
+            border: 2px dashed currentcolor;
+            cursor: pointer;
+            font-family: sans-serif;
+            transition: color 300ms ease-in-out, background 300ms ease-in-out;
+            outline: none;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+
+        .picture:hover {
+            color: #000000;
+            background: #fcfcfc;
+        }
+
+        .picture:active {
+            border-color: turquoise;
+            color: turquoise;
+            background: #fcfcfc;
+        }
+
+        .picture:focus {
+            color: #777;
+            background: #fcfcfc;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .picture__img {
+            max-width: 100%;
+        }
+    </style>
+</head>
+
+<body class="pb-10">
+    <div class="toast-container space-y-4"></div>
+
+    <div class="relative h-screen w-full pt-2 ">
+        <img src="/img/background.jpg" alt="Background Image"
+            class="absolute inset-0 w-full h-full object-cover filter blur-sm">
+        <div class="absolute inset-0 bg-black bg-opacity-50 p-5"></div>
+        <div class="absolute inset-0 flex flex-col items-center justify-center">
+            <div class="w-50 p-2 rounded-lg bg-black bg-opacity-50">
+
+
+                <div id="loadingScreen" class="fixed inset-0 flex items-center justify-center bg-white z-50 hidden">
+                    <div class="flex space-x-2">
+                        <div class="h-8 w-8 bg-black rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                        <div class="h-8 w-8 bg-black rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                        <div class="h-8 w-8 bg-black rounded-full animate-bounce"></div>
+                    </div>
+                </div>
+           
+                    <div class=" flex gap-2 items-center  justify-between text-white bg-gray-800 p-3 rounded">                   
+                        <a href="/logout" class="hover:bg-gray-600 p-2 rounded duration-300 align-middle">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
+                            </svg>Sair
+                        </a>
+                    </div>
+
+                <div class=" flex flex-col items-center justify-center  p-4">
+                    <span class="text-white text-lg mb-4">Olá Seja Bem Vindo(a)</span>
+                    <span class="text-white text-lg mb-4">Escolha o dia da semana para realizar o checklist</span>
+                    <div class="flex flex-wrap gap-4">
+                      <a href="/ChecklistSegunda" class="bg-gray-800 hover:bg-red-800 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow hover:shadow-lg">
+                        SEGUNDA-FEIRA
+                      </a>
+                      <a href="/ChecklistSexta" class="bg-gray-800 hover:bg-red-800 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow hover:shadow-lg">
+                        SEXTA-FEIRA / SÁBADO
+                      </a>
+                    </div>
+                  </div>
+          
+
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        const messageFromBackend = <%- JSON.stringify(message || null) %>;
+
+
+                        if (messageFromBackend && messageFromBackend.type) {
+                            showToast(messageFromBackend.type, messageFromBackend.title, messageFromBackend.text);
+                        }
+                    });
+                </script>
+                <script type="text/javascript">
+                    window.openModal = function (modalId) {
+                        document.getElementById(modalId).style.display = 'block'
+                        document.getElementsByTagName('body')[0].classList.add('overflow-y-hidden')
+                    }
+
+                    window.closeModal = function (modalId) {
+                        document.getElementById(modalId).style.display = 'none'
+                        document.getElementsByTagName('body')[0].classList.remove('overflow-y-hidden')
+                    }
+
+                    // Close all modals when press ESC
+                    document.onkeydown = function (event) {
+                        event = event || window.event;
+                        if (event.keyCode === 27) {
+                            document.getElementsByTagName('body')[0].classList.remove('overflow-y-hidden')
+                            let modals = document.getElementsByClassName('modal');
+                            Array.prototype.slice.call(modals).forEach(i => {
+                                i.style.display = 'none'
+                            })
+                        }
+                    };
+                </script>
+
+
+                <script>
+                    function showToast(type, title, message) {
+                        const container = document.querySelector('.toast-container');
+                        const toast = document.createElement('div');
+
+                        const colors = {
+                            success: 'bg-green-500',
+                            error: 'bg-red-500',
+                            warning: 'bg-yellow-500',
+                            info: 'bg-blue-500'
+                        };
+
+                        const icons = {
+                            success: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                     </svg>`,
+                            error: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                   </svg>`,
+                            warning: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                     </svg>`,
+                            info: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>`
+                        };
+
+                        toast.className = `toast ${colors[type]} text-white p-4 rounded-lg shadow-lg flex items-start space-x-4 relative overflow-hidden`;
+                        toast.innerHTML = `
+            <div class="flex-shrink-0">
+                ${icons[type]}
+            </div>
+            <div class="flex-1">
+                <h3 class="font-bold">${title}</h3>
+                <p class="text-sm opacity-90">${message}</p>
+            </div>
+            <button onclick="this.parentElement.remove()" class="flex-shrink-0 hover:opacity-75">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+            <div class="progress-bar"></div>`;
+
+                        container.appendChild(toast);
+
+                        setTimeout(() => {
+                            toast.classList.add('hide');
+                            setTimeout(() => toast.remove(), 500);
+                        }, 3000);
+                    }
+                </script>
+                </script>
+
+            </div>
+        </div>
+
+    </div>
+</body>
