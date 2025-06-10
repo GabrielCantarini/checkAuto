@@ -13,7 +13,7 @@ O sistema é desenvolvido em **Node.js**, **EJS** e utiliza o banco de dados **M
   - Nível de combustível
   - Quilometragem
   - Quantidade de combustível abastecido
-  - Foto do veículo para validação
+  - Foto do painel de instrumentos do veículo para validação
 - **Aprovação de Checklist:** Gestores podem visualizar os checklists cadastrados, com as informações e fotos, e aprovar ou desaprovar os registros.
 - **Visualização do Histórico:** Gestores podem acessar e visualizar o histórico de abastecimento e manutenção dos veículos.
 
