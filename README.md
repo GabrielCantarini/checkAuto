@@ -5,6 +5,8 @@ Este sistema foi desenvolvido como parte de um projeto de extensão para a empre
 o controle de veículos da empresa, registrando informações de abastecimento, quilometragem e nível de combustível dos veículos, além de permitir que os gestores 
 aprovem ou desaprovem os checklists enviados pelos motoristas.
 
+Alunos: Gabriel da Silva Cantarini e Gabriel Santos Lima.
+
 O sistema é desenvolvido em **Node.js**, **EJS** e utiliza o banco de dados **MySQL** para armazenar as informações.
 
 ## Funcionalidades
